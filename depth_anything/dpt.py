@@ -148,7 +148,7 @@ class DPT_DINOv2(nn.Module):
         current_dir = os.path.dirname(__file__)
 
         # 必要なサブディレクトリへのパスを組み立てる
-        hub_dir = os.path.join(current_dir, 'torchhub/facebookresearch_dinov2_main')
+        hub_dir = os.path.join(current_dir, '../torchhub/facebookresearch_dinov2_main')
 
         if localhub:
             # ローカルのhub_dirを指定してモデルをロード
