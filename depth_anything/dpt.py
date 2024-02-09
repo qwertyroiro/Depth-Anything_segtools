@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from huggingface_hub import PyTorchModelHubMixin, hf_hub_download
+import os
 
 from depth_anything.blocks import FeatureFusionBlock, _make_scratch
 
@@ -143,9 +144,17 @@ class DPT_DINOv2(nn.Module):
         assert encoder in ['vits', 'vitb', 'vitl']
         
         # in case the Internet connection is not stable, please load the DINOv2 locally
+        # 現在のファイルのディレクトリパスを取得
+        current_dir = os.path.dirname(__file__)
+
+        # 必要なサブディレクトリへのパスを組み立てる
+        hub_dir = os.path.join(current_dir, 'torchhub/facebookresearch_dinov2_main')
+
         if localhub:
-            self.pretrained = torch.hub.load('torchhub/facebookresearch_dinov2_main', 'dinov2_{:}14'.format(encoder), source='local', pretrained=False)
+            # ローカルのhub_dirを指定してモデルをロード
+            self.pretrained = torch.hub.load(hub_dir, 'dinov2_{:}14'.format(encoder), source='local', pretrained=False)
         else:
+            # オンラインリポジトリからモデルをロード
             self.pretrained = torch.hub.load('facebookresearch/dinov2', 'dinov2_{:}14'.format(encoder))
         
         dim = self.pretrained.blocks[0].attn.qkv.in_features
